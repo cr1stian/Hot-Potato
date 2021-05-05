@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #define p(x) std::cout << #x << " " << x << std::endl;
 
@@ -24,7 +25,7 @@ private:
 public:
 	Node(); // Default Constructor
 	Node(const Node& oldNode); // Copy Constructor
-	//Node& operator=(const Node* rhNode); // Copy Assignment Operator
+	Node& operator=(const Node* rhNode); // Copy Assignment Operator
 	~Node(); // Deconstructor
 	void SetNext(Node* nextNode); // Sets the last Node's pointer to the NewNode
 	Node* GetNext(); // Returns pointer to the next object
@@ -67,7 +68,7 @@ int main(){
 	headNode.SetNext(playerOne);
 	playerOne->SetNext(&secPlayer);
 
-	std::cout << headNode.GetNext()->GetPlayerName() << "\n";
+	std::cout << headNode.GetNext()->GetNext()->GetPlayerName() << "+Hello \n";
 
 	Game firstGame;
 	firstGame.AskForNumbers();
@@ -89,9 +90,9 @@ int main(){
 	*/
 
 
-	std::cout << "\n" + firstGame.PrintInfo();
+	std::cout << "\n" + firstGame.PrintInfo() << std::endl;
 
-
+	
 }
 
 // ********************
@@ -152,19 +153,14 @@ Node::Node(const Node& oldNode){
 	playerData = oldNode.playerData;
 }
 
-
+// Des: Explicitly Defined Copy Assignment Operator
+// Pre: Memory must be allocated for left hand object
+// Pos: Assign
 Node& Node::operator=(const Node* rhNode){
 	nPlayer = rhNode->nPlayer;
 	playerData = rhNode->playerData;
 	return *this;
 }
-
-
-
-// Des: Copy Assignment Operator for implicitly copying values over
-// Pre: Left hand object must exist
-// Pos: Left hand object is assigned right hand object's valyes
-
 
 
 // Des: Set's object's Pointer to the next node
@@ -218,15 +214,20 @@ Game::Game(){
 // Pre: Memory must be allocated
 // Pos: Console log of Object Destruction
 Game::~Game(){
+	delete hPointer;
+	delete tPointer;
 	std::cout << "Game Object Destroyed\n";
 }
 
+
+// Revist this Lower function, Should be a cleaner way to do this repittion
 
 // Des: Asks Players for number of Players and Passes
 // Pre: Memory must be allocated for object
 // Pos: N and X numbers applied to numPlayers & numPasses respectively
 void Game::AskForNumbers(){
 	int passes(-1), players(-1);
+
 	std::string askPlayers = "How Many Number of Players?\n";
 	std::string askPasses = "How Many Number of Passes?\n";
 
@@ -235,10 +236,8 @@ void Game::AskForNumbers(){
 	std::cout << askPasses;
 	std::cin >> passes;
 
-	p(players); // DEBUG********************
-	p(passes);	// DEBUG********************
 
-	while(std::cin.fail() || (players < 0 || passes < 0) ){
+	while(std::cin.fail() || (players < 1 || passes < 0) ){
 		std::cout << "Error with given values\nTry Again\n";
 		std::cin.clear();
 		std::cin.ignore();
@@ -246,7 +245,7 @@ void Game::AskForNumbers(){
 		std::cout << askPlayers;
 		std::cin >> players;
 		std::cout << askPasses;
-		std::cin >> askPasses;
+		std::cin >> passes;
 	}
 
 	numPlayers = players;
@@ -257,6 +256,34 @@ void Game::AskForNumbers(){
 // Pre: Memory must be allocated
 // Pos: Adds next node to list
 void Game::AddPlayer(){
+
+	// Case: NO Node
+	// Case: Has Node
+
+	std::ofstream nameFile;
+	nameFile.open("nameFile.txt");
+
+	int playerCount(0);
+	std::string name = "";
+
+	if(!nameFile){
+		// Throw error
+		std::cout << "Error: Could not open Name File";
+	}
+
+
+	// TODO: This function should be CreatePlayer
+	/* Where we dynamically create the nodes THEN call AddPlayer() which will check our bases cases before adding the new node to the List */
+
+	try{
+		while( (playerCount < numPlayers) && std::cin >> name){
+			Node* newPlayer = new Node();
+			newPlayer->SetPlayerName(name);
+			playerCount++;
+
+			
+		}
+	}
 
 
 	/* TODO: Consider where to put the catch for the try catch here
