@@ -45,12 +45,17 @@ public:
 	Game(); // Default Constructor
 	~Game(); // Deconstructor
 	void AskForNumbers(); // Asks user for N Players and X Passes
-	void AddPlayer(); // Adds a new player to list
+	void CreatePlayer(); // Creates New Player
+	void AddPlayer(Node& newPlayer); // Adds a new player to list
 	void RemovePlayerAfter(Node curPlayer); // Removes player after CurPlayer in List
 
 	std::string PrintInfo(){ return "Players: " + std::to_string(numPlayers) + " Passes: " + std::to_string(numPasses); }
 
 };
+
+class PlayerCreationFailed {};
+class NodeCreationFailed {};
+class FileError {};
 
 int main(){
 	
@@ -252,10 +257,12 @@ void Game::AskForNumbers(){
 	numPasses = passes;
 }
 
-// Des: Adds new Player object to linked list
-// Pre: Memory must be allocated
-// Pos: Adds next node to list
-void Game::AddPlayer(){
+
+/* Need to make CreatePlayer use try Catch for dynamic allocation of players(Nodes) then call Addplayer to specifically add our newly created player to our linkd list*/
+
+
+void Game::CreatePlayer() {
+
 
 	// Case: NO Node
 	// Case: Has Node
@@ -266,7 +273,7 @@ void Game::AddPlayer(){
 	int playerCount(0);
 	std::string name = "";
 
-	if(!nameFile){
+	if (!nameFile) {
 		// Throw error
 		std::cout << "Error: Could not open Name File";
 	}
@@ -275,24 +282,38 @@ void Game::AddPlayer(){
 	// TODO: This function should be CreatePlayer
 	/* Where we dynamically create the nodes THEN call AddPlayer() which will check our bases cases before adding the new node to the List */
 
-	try{
-		while( (playerCount < numPlayers) && std::cin >> name){
+	try {
+		while ((playerCount < numPlayers)) {
+			std::cin >> name;
 			Node* newPlayer = new Node();
 			newPlayer->SetPlayerName(name);
 			playerCount++;
 
-			
+
 		}
+	}
+	catch (PlayerCreationFailed()) {
+		std::cout << "Player Creation Failed";
 	}
 
 
 	/* TODO: Consider where to put the catch for the try catch here
-			
+
 					I create the objects dynamically here in a try
 			1. I catch the error here and handle accordingly
 			2. I catch the error in the scope of where I call this function [ Main ]
 
-			Regardless I have to use the number of players reqeuest != 
+			Regardless I have to use the number of players reqeuest !=
 				I should throw an error and restart?
 	 */
+}
+
+
+
+// Des: Adds new Player object to linked list
+// Pre: Memory must be allocated
+// Pos: Adds next node to list
+void Game::AddPlayer(Node& newPlayer){
+
+
 }
