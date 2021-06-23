@@ -46,7 +46,7 @@ public:
 	~Game(); // Deconstructor
 	void AskForNumbers(); // Asks user for N Players and X Passes
 	void CreatePlayer(); // Creates New Player
-	void AddPlayer(Node& newPlayer); // Adds a new player to list
+	void AddPlayer(Node* newPlayer); // Adds a new player to list
 	void RemovePlayerAfter(Node curPlayer); // Removes player after CurPlayer in List
 
 	std::string PrintInfo(){ return "Players: " + std::to_string(numPlayers) + " Passes: " + std::to_string(numPasses); }
@@ -69,15 +69,13 @@ int main(){
 	playerOne = &thisPlayer;
 	playerTwo = &secPlayer;
 
-	Node headNode;
-	headNode.SetNext(playerOne);
-	playerOne->SetNext(&secPlayer);
 
-	std::cout << headNode.GetNext()->GetNext()->GetPlayerName() << "+Hello \n";
 
 	Game firstGame;
 	firstGame.AskForNumbers();
-
+	firstGame.AddPlayer(playerOne);
+	firstGame.AddPlayer(playerTwo);
+	
 
 
 	/* At a point where Program crashes after running the below statement
@@ -95,14 +93,13 @@ int main(){
 	*/
 
 
-	std::cout << "\n" + firstGame.PrintInfo() << std::endl;
+	//std::cout << "\n" + firstGame.PrintInfo() << std::endl;
 
-	
 }
 
-// ********************
+// **************************
 /********* Player *********/
-// ********************
+// **************************
 
 // Des: Default Construcor Initializes Object with a blank name
 // Pre: Memory must be allocated for Object
@@ -262,11 +259,6 @@ void Game::AskForNumbers(){
 
 
 void Game::CreatePlayer() {
-
-
-	// Case: NO Node
-	// Case: Has Node
-
 	std::ofstream nameFile;
 	nameFile.open("nameFile.txt");
 
@@ -276,9 +268,7 @@ void Game::CreatePlayer() {
 	if (!nameFile) {
 		// Throw error
 		std::cout << "Error: Could not open Name File";
-	}
-
-
+	}   
 	// TODO: This function should be CreatePlayer
 	/* Where we dynamically create the nodes THEN call AddPlayer() which will check our bases cases before adding the new node to the List */
 
@@ -288,24 +278,18 @@ void Game::CreatePlayer() {
 			Node* newPlayer = new Node();
 			newPlayer->SetPlayerName(name);
 			playerCount++;
-
-
 		}
 	}
 	catch (PlayerCreationFailed()) {
 		std::cout << "Player Creation Failed";
 	}
-
-
 	/* TODO: Consider where to put the catch for the try catch here
-
 					I create the objects dynamically here in a try
 			1. I catch the error here and handle accordingly
 			2. I catch the error in the scope of where I call this function [ Main ]
 
 			Regardless I have to use the number of players reqeuest !=
-				I should throw an error and restart?
-	 */
+				I should throw an error and restart?									 */
 }
 
 
@@ -313,7 +297,15 @@ void Game::CreatePlayer() {
 // Des: Adds new Player object to linked list
 // Pre: Memory must be allocated
 // Pos: Adds next node to list
-void Game::AddPlayer(Node& newPlayer){
+void Game::AddPlayer(Node* newPlayer){
 
+	if (hPointer == nullptr) {
+		hPointer = newPlayer;
+		tPointer = newPlayer;
+	}
+	else {
+		tPointer->SetNext(newPlayer);
+		tPointer = newPlayer;
+	}
 
-}
+}  
