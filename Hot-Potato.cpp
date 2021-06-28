@@ -49,6 +49,9 @@ public:
 	void AddPlayer(Node* newPlayer); // Adds a new player to list
 	void RemovePlayerAfter(Node curPlayer); // Removes player after CurPlayer in List
 
+	Node* GetHeadPointer(); // Returns Node located first in the linked list
+	Node* GetTailPointer(); // Returns Node located last in the linked list
+
 	std::string PrintInfo(){ return "Players: " + std::to_string(numPlayers) + " Passes: " + std::to_string(numPasses); }
 
 };
@@ -73,11 +76,19 @@ int main(){
 
 	Game firstGame;
 	firstGame.AskForNumbers();
+	std::cout << "\nPast AskForNumbers()";
+
 	firstGame.AddPlayer(playerOne);
+	std::cout << "\nPast AddPlayer()";
+
 	firstGame.AddPlayer(playerTwo);
-	
+	std::cout << "\nPast AddPlayer() 2";
 
+	//   std::cout << "\n" + firstGame.PrintInfo();
+	std::cout << "\n" + firstGame.GetHeadPointer()->GetPlayerName();
+	std::cout << "\n" + firstGame.GetTailPointer()->GetPlayerName();
 
+	std::cout << "\n";
 	/* At a point where Program crashes after running the below statement
 	
 		Looking at the console log, We notice AskForNumbers() runs smoothly and accordingly
@@ -92,8 +103,8 @@ int main(){
 
 	*/
 
+	delete playerOne, playerTwo;
 
-	//std::cout << "\n" + firstGame.PrintInfo() << std::endl;
 
 }
 
@@ -235,8 +246,10 @@ void Game::AskForNumbers(){
 
 	std::cout << askPlayers;
 	std::cin >> players;
+	std::cout << "\nInBetween the Asks\n";
 	std::cout << askPasses;
 	std::cin >> passes;
+	std::cout << "\nInside AskForNumbers() - 1";
 
 
 	while(std::cin.fail() || (players < 1 || passes < 0) ){
@@ -249,9 +262,12 @@ void Game::AskForNumbers(){
 		std::cout << askPasses;
 		std::cin >> passes;
 	}
+	std::cout << "\nInside AskForNumbers() - 2";
 
 	numPlayers = players;
 	numPasses = passes;
+
+	std::cout << "\nInside AskForNumbers() - 3";
 }
 
 
@@ -292,8 +308,6 @@ void Game::CreatePlayer() {
 				I should throw an error and restart?									 */
 }
 
-
-
 // Des: Adds new Player object to linked list
 // Pre: Memory must be allocated
 // Pos: Adds next node to list
@@ -309,3 +323,12 @@ void Game::AddPlayer(Node* newPlayer){
 	}
 
 }  
+
+
+Node* Game::GetHeadPointer() {
+	return hPointer;
+}
+
+Node* Game::GetTailPointer() {
+	return tPointer;
+}
