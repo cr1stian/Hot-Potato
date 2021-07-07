@@ -283,8 +283,6 @@ void Game::CreatePlayer() {
 				I should throw an error and restart?									 */
 }
 
-
-
 // Des: Adds new Player object to linked list
 // Pre: Memory must be allocated
 // Pos: Adds next node to list
