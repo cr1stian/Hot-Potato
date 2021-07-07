@@ -47,7 +47,10 @@ public:
 	void AskForNumbers(); // Asks user for N Players and X Passes
 	void CreatePlayer(); // Creates New Player
 	void AddPlayer(Node* newPlayer); // Adds a new player to list
-	void RemovePlayerAfter(Node curPlayer); // Removes player after CurPlayer in List
+	Node* PassPotato(); // Passes the Potato X times
+	void RemovePlayer(Node curPlayer); // Removes CurPlayer in List
+
+	Node* GetHeadPointer(); // Returns Head Pointer
 
 	std::string PrintInfo(){ return "Players: " + std::to_string(numPlayers) + " Passes: " + std::to_string(numPasses); }
 
@@ -60,40 +63,13 @@ class FileError {};
 int main(){
 	
 
-
-	Node thisPlayer, secPlayer;
-	thisPlayer.SetPlayerName("Cristian");
-	secPlayer.SetPlayerName("Sam");
-
-	Node* playerOne, * playerTwo;
-	playerOne = &thisPlayer;
-	playerTwo = &secPlayer;
-
-
-
 	Game firstGame;
 	firstGame.AskForNumbers();
-	firstGame.AddPlayer(playerOne);
-	firstGame.AddPlayer(playerTwo);
-	
+	firstGame.CreatePlayer();
+
+	std::cout << "\n" + firstGame.GetHeadPointer()->GetPlayerName();
 
 
-	/* At a point where Program crashes after running the below statement
-	
-		Looking at the console log, We notice AskForNumbers() runs smoothly and accordingly
-		as well as the PrintInfo() below
-
-		The console log shows our values being grabbed and stored correctly 
-		BUUUUUT only see the destructor messages from objects Game & Sam 
-
-		No message saying Cristian Destoryed
-
-		this might be the object going out of bound and throwing our error in Visual Studio
-
-	*/
-
-
-	//std::cout << "\n" + firstGame.PrintInfo() << std::endl;
 
 }
 
@@ -197,7 +173,7 @@ Node* Node::GetNext(){
 }
 
 // ********************
-/* Game */
+/******* Game ********/
 // ********************
 
 
@@ -257,13 +233,17 @@ void Game::AskForNumbers(){
 
 /* Need to make CreatePlayer use try Catch for dynamic allocation of players(Nodes) then call Addplayer to specifically add our newly created player to our linkd list*/
 
-
+// Des: Creates new players using Player Quantity and grabs names from NameFile
+// Pre: Game Object must be instaniated 
+// Pos: New Player Object created
 void Game::CreatePlayer() {
-	std::ofstream nameFile;
+	std::ifstream nameFile;
 	nameFile.open("nameFile.txt");
 
 	int playerCount(0);
 	std::string name = "";
+
+	p("here");
 
 	if (!nameFile) {
 		// Throw error
@@ -273,14 +253,25 @@ void Game::CreatePlayer() {
 	/* Where we dynamically create the nodes THEN call AddPlayer() which will check our bases cases before adding the new node to the List */
 
 	try {
+		p("Inside Try\n");
 		while ((playerCount < numPlayers)) {
-			std::cin >> name;
+
+			p("Inside While");
+			nameFile >> name;
 			Node* newPlayer = new Node();
-			newPlayer->SetPlayerName(name);
-			playerCount++;
+			if (newPlayer == nullptr) {
+				p("Next to Throw");
+				throw PlayerCreationFailed();
+			}
+			else {
+				p("Inside Else");
+				newPlayer->SetPlayerName(name);
+				AddPlayer(newPlayer);
+				playerCount++;
+			}
 		}
 	}
-	catch (PlayerCreationFailed()) {
+	catch (PlayerCreationFailed& err) {
 		std::cout << "Player Creation Failed";
 	}
 	/* TODO: Consider where to put the catch for the try catch here
@@ -308,4 +299,20 @@ void Game::AddPlayer(Node* newPlayer){
 		tPointer = newPlayer;
 	}
 
-}  
+}
+
+Node* Game::PassPotato()
+{
+
+
+	return nullptr;
+}
+
+Node* Game::GetHeadPointer()
+{
+
+	if (hPointer != nullptr) {
+		return hPointer;
+	}
+	return nullptr;
+}
