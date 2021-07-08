@@ -47,8 +47,9 @@ public:
 	void AskForNumbers(); // Asks user for N Players and X Passes
 	void CreatePlayer(); // Creates New Player
 	void AddPlayer(Node* newPlayer); // Adds a new player to list
-	Node* PassPotato(); // Passes the Potato X times
-	void RemovePlayer(Node curPlayer); // Removes CurPlayer in List
+	void PassPotato(); // Passes the Potato X times
+	std::string AnnounceWinner(Node* curPlayer); // Displays Winner
+	void RemovePlayer(Node* curPlayer); // Removes CurPlayer in List
 
 	Node* GetHeadPointer(); // Returns Head Pointer
 
@@ -258,6 +259,9 @@ void Game::CreatePlayer() {
 
 			p("Inside While");
 			nameFile >> name;
+
+			std::cout << "\n" + name;
+
 			Node* newPlayer = new Node();
 			if (newPlayer == nullptr) {
 				p("Next to Throw");
@@ -287,7 +291,6 @@ void Game::CreatePlayer() {
 // Pre: Memory must be allocated
 // Pos: Adds next node to list
 void Game::AddPlayer(Node* newPlayer){
-
 	if (hPointer == nullptr) {
 		hPointer = newPlayer;
 		tPointer = newPlayer;
@@ -296,14 +299,26 @@ void Game::AddPlayer(Node* newPlayer){
 		tPointer->SetNext(newPlayer);
 		tPointer = newPlayer;
 	}
-
 }
 
-Node* Game::PassPotato()
-{
+void Game::PassPotato(){
+	Node* curPlayer;
+
+	while (numPlayers > 1) {
+		curPlayer = hPointer;
+		for (int pos(0); pos < numPasses; pos++) {
+			curPlayer = curPlayer->GetNext();
+		}
+		RemovePlayer(curPlayer);
+		numPlayers--;
+	}
+
+	//By the constraints of our code above
+	//When numPlayers is == 1 the code above will not run, therefore we have our last/Winner Player
+	//We should then display the winner
 
 
-	return nullptr;
+	
 }
 
 Node* Game::GetHeadPointer()
