@@ -5,6 +5,16 @@
 #define p(x) std::cout << #x << " " << x << std::endl;
 
 
+
+/*
+Comeback to these:
+
+CreatePlayer - Needs try/catch to be touched up and ensure functionality
+
+
+
+*/
+
 class Player{
 private:
 	std::string name; // Player's Name
@@ -48,7 +58,7 @@ public:
 	void CreatePlayer(); // Creates New Player
 	void AddPlayer(Node* newPlayer); // Adds a new player to list
 	void PassPotato(); // Passes the Potato X times
-	std::string AnnounceWinner(Node* curPlayer); // Displays Winner
+	void AnnounceWinner(Node* curPlayer); // Displays Winner
 	void RemovePlayer(Node* curPlayer); // Removes CurPlayer in List
 
 	Node* GetHeadPointer(); // Returns Head Pointer
@@ -57,7 +67,12 @@ public:
 
 };
 
-class PlayerCreationFailed {};
+class PlayerCreationFailed {
+public: 
+	std::string Message() {
+		return "Player Creation Failed\n";
+	};
+};
 class NodeCreationFailed {};
 class FileError {};
 
@@ -69,6 +84,9 @@ int main(){
 	firstGame.CreatePlayer();
 
 	std::cout << "\n" + firstGame.GetHeadPointer()->GetPlayerName();
+
+	firstGame.PassPotato();
+
 
 
 
@@ -276,7 +294,7 @@ void Game::CreatePlayer() {
 		}
 	}
 	catch (PlayerCreationFailed& err) {
-		std::cout << "Player Creation Failed";
+		std::cout << err.Message() << "Player Creation Failed";
 	}
 	/* TODO: Consider where to put the catch for the try catch here
 					I create the objects dynamically here in a try
@@ -301,31 +319,55 @@ void Game::AddPlayer(Node* newPlayer){
 	}
 }
 
+
+// Des: Passes Potato X amount of times to then call RemovePlayer()
+// Pre: Players must be allocated into the List
+// Pos: Passes Potato around the List of Players, removing each player it lands on 
 void Game::PassPotato(){
-	Node* curPlayer;
+	Node *curPlayer, *deletePlayer;
+	curPlayer = hPointer;
 
 	while (numPlayers > 1) {
-		curPlayer = hPointer;
-		for (int pos(0); pos < numPasses; pos++) {
+		for (int pos(0); pos < numPasses; pos++)// Passing the Potato by numPasses
 			curPlayer = curPlayer->GetNext();
-		}
-		RemovePlayer(curPlayer);
+
+		deletePlayer = curPlayer; 
+		curPlayer = curPlayer->GetNext();
+		RemovePlayer(deletePlayer);
 		numPlayers--;
 	}
 
-	//By the constraints of our code above
-	//When numPlayers is == 1 the code above will not run, therefore we have our last/Winner Player
-	//We should then display the winner
+	AnnounceWinner(curPlayer);
+	RemovePlayer(curPlayer);
+	numPlayers--;
+	delete curPlayer, deletePlayer;
+}
+
+
+// Des: Returns hPointer if assigned to a value; else return nullptr
+// Pre: hPointer must be assigned to a value
+// Pos: Returns the first node in Linked List
+Node* Game::GetHeadPointer(){
+	return (hPointer == nullptr ? nullptr : hPointer);
+}
+
+// Des: Display a string to the console Announcing the Winner
+// Pre: One player must be left in List
+// Pos: Display's Winner's Name on the Console
+void Game::AnnounceWinner(Node* curPlayer) {
+	std::cout << "\nWinner is: " + curPlayer->GetPlayerName() << std::endl;
+}
+
+void RemovePlayer(Node* curPlayer){
+	/*Need to loop through with the condition checking if (next == curplayer?)
+		if true
+			
+			curplayer->Next = curPlayer->Next->Next()
+		else
+		curPlayer = curPlayer->Next();
+
 
 
 	
-}
-
-Node* Game::GetHeadPointer()
-{
-
-	if (hPointer != nullptr) {
-		return hPointer;
-	}
-	return nullptr;
+	*/
 }
